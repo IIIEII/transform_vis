@@ -1,0 +1,8 @@
+{
+  "id": "visTypeTransform",
+  "version": "kibana",
+  "server": true,
+  "ui": true,
+  "requiredPlugins": ["expressions", "visualizations", "data", "kibanaUtils"],
+  "requiredBundles": ["visDefaultEditor"]
+}

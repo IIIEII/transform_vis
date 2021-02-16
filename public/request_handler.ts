@@ -1,12 +1,12 @@
 import { transform } from '@babel/standalone';
 import { IUiSettingsClient } from 'kibana/public';
 import Mustache from 'mustache';
-import { timefilter } from 'ui/timefilter';
-import chrome from 'ui/chrome';
 import { esQuery, TimeRange, Query, Filter } from '../../../src/plugins/data/public';
-import { VisParams } from '../../../src/legacy/core_plugins/visualizations/public/np_ready/public';
 import { TransformVisData } from './types';
-import { LegacyApiCaller } from '../../../src/plugins/data/public/search/es_client';
+import { Client } from 'elasticsearch';
+import { VisParams } from "../../../src/plugins/visualizations/public";
+import { Timefilter } from "../../../src/plugins/data/public/query";
+import { getInjectedVars } from './plugin';
 
 const babelTransform = (code: string) => {
   return transform(code, {
@@ -18,9 +18,11 @@ const babelTransform = (code: string) => {
 export function getTransformRequestHandler({
                                              uiSettings,
                                              es,
+                                             timeFilter,
                                            }: {
   uiSettings: IUiSettingsClient;
-  es: LegacyApiCaller;
+  es: Client;
+  timeFilter: Timefilter;
 }) {
   return async ({
                   timeRange,
@@ -30,13 +32,10 @@ export function getTransformRequestHandler({
                 }: {
     timeRange: TimeRange | null;
     filters: Filter[] | null;
-    query: Query | null;
+    query: Query | Query[] | null;
     visParams: VisParams;
   }): Promise<TransformVisData> => {
-    const settings = chrome.getUiSettingsClient();
-    const options = chrome.getInjected('transformVisOptions');
-
-    const _timeRange: TimeRange = timeRange || settings.get('timepicker:timeDefaults');
+    const _timeRange: TimeRange = timeRange || uiSettings.get('timepicker:timeDefaults');
     const _filters = filters || [];
     const _query = query || { language: 'kquery', query: '' };
 
@@ -53,7 +52,7 @@ export function getTransformRequestHandler({
 
     const bindme: Record<string, any> = {};
     bindme.context = context;
-    bindme.timefilter = timefilter;
+    bindme.timefilter = timeFilter;
     bindme.timeRange = _timeRange;
     bindme.buildEsQuery = esQuery.buildEsQuery;
     bindme.es = es;
@@ -126,7 +125,7 @@ export function getTransformRequestHandler({
     };
 
     const evalMeta = (response?: any) => {
-      if (options.allow_unsafe) {
+      if (getInjectedVars().allowUnsafe) {
         try {
           // @ts-ignore используется без var/let/const, а как необязатеьный параметр, чтобы не переименовывался при оптимизиции кода
           response = bindme.response;
@@ -158,7 +157,7 @@ export function getTransformRequestHandler({
           meta: bindme.meta,
           es,
           context,
-          timefilter,
+          timefilter: timeFilter,
           timeRange,
           buildEsQuery: esQuery.buildEsQuery,
         };
