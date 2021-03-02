@@ -3,10 +3,6 @@
   "version": "7.10.2.0",
   "description": "Transform Visualization",
   "main": "index.js",
-  "kibana": {
-    "version": "7.10.2",
-    "templateVersion": "1.0.0"
-  },
   "license": "Apache-2.0",
   "contributors": [
     "Alexander Shepel <al.iiieii@gmail.com>"
@@ -17,20 +13,11 @@
     "plugin"
   ],
   "scripts": {
-    "preinstall": "node ../../preinstall_check",
-    "kbn": "node ../../scripts/kbn",
-    "es": "node ../../scripts/es",
-    "lint": "eslint .",
-    "start": "plugin-helpers start",
-    "test:server": "plugin-helpers test:server",
-    "test:browser": "plugin-helpers test:browser",
-    "build": "plugin-helpers build"
+    "build": "yarn plugin-helpers build",
+    "plugin-helpers": "node ../../scripts/plugin_helpers",
+    "kbn": "node ../../scripts/kbn"
   },
   "devDependencies": {
-    "@elastic/eslint-config-kibana": "link:../../packages/elastic-eslint-config-kibana",
-    "@elastic/eslint-import-resolver-kibana": "link:../../packages/kbn-eslint-import-resolver-kibana",
-    "@kbn/expect": "link:../../packages/kbn-expect",
-    "@kbn/plugin-helpers": "link:../../packages/kbn-plugin-helpers",
     "@elastic/eui": "29.3.2",
     "elasticsearch": "^16.7.0",
     "@types/babel__standalone": "^7.1.2",
