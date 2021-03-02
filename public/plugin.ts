@@ -6,7 +6,7 @@ import { createTransformVisDefinition } from './transform_vis';
 import { createTransformVisFn } from './transform_fn';
 import { DataPublicPluginSetup } from '../../../src/plugins/data/public';
 import { createGetterSetter } from "../../../src/plugins/kibana_utils/common";
-import { ConfigType } from "../config";
+import { ConfigType } from "../common/config";
 import { Client } from 'elasticsearch';
 import url from 'url';
 

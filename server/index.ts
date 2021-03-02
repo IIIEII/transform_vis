@@ -1,5 +1,5 @@
 import { CoreSetup, PluginConfigDescriptor } from "kibana/server";
-import { configSchema, ConfigType } from "../config";
+import { configSchema, ConfigType } from "../common/config";
 import { defineRoutes } from "./routes";
 
 export const config: PluginConfigDescriptor<ConfigType> = {
